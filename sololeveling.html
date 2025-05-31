@@ -4,85 +4,83 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Fiche de personnage Odin504 - Solo Leveling</title>
-<link rel="stylesheet" href="sololeveling.css" />
+<link rel="stylesheet" href="sololeveling.css">
+<style>
+  /* Cases à cocher à gauche avec label aligné */
+  section input[type="checkbox"] {
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  section div > label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  /* Boutons de quête côte à côte */
+  .button-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1em;
+  }
+  .button-container button {
+    flex: 1;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  /* Pour que la section des quêtes ait une bordure et une taille */
+  #quest-display {
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-height: 150px;
+    margin-bottom: 20px;
+  }
+</style>
 </head>
 <body>
+
   <h1>Fiche de personnage Solo Leveling</h1>
   <h2>Odin504</h2>
 
   <section>
     <h3>Statistiques de base</h3>
-    <div class="stat-row">
+    <div>
       <label for="force">Force :</label>
       <input type="number" id="force" min="0" max="100" value="5" />
     </div>
-    <div class="stat-row">
+    <div>
       <label for="endurance">Endurance :</label>
       <input type="number" id="endurance" min="0" max="100" value="5" />
     </div>
-    <div class="stat-row">
+    <div>
       <label for="constitution">Constitution :</label>
       <input type="number" id="constitution" min="0" max="100" value="5" />
     </div>
-    <div class="stat-row">
+    <div>
       <label for="dext_abdo">Dextérité abdominale :</label>
       <input type="number" id="dext_abdo" min="0" max="100" value="5" />
     </div>
-    <div class="stat-row">
+    <div>
       <label for="volonte">Volonté :</label>
       <input type="number" id="volonte" min="0" max="100" value="6" />
     </div>
   </section>
+
   <section>
     <h3>Checklist des quêtes à cocher</h3>
-    <div class="checkbox-group">
+    <div>
       <label><input type="checkbox" id="q1" /> Quête quotidienne : Éveil du Titan du Haut (2 rounds)</label>
+    </div>
+    <div>
       <label><input type="checkbox" id="q2" /> Quête spéciale : Cœur d’Acier (3 rounds)</label>
+    </div>
+    <div>
       <label><input type="checkbox" id="q3" /> Raid hebdomadaire : Raid du Cœur du Dragon (2 à 3 rounds)</label>
     </div>
   </section>
 
   <button id="saveBtn">Sauvegarder dans le navigateur</button>
-
-  <script>
-    const saveBtn = document.getElementById('saveBtn');
-
-    function saveData() {
-      const data = {
-        force: document.getElementById('force').value,
-        endurance: document.getElementById('endurance').value,
-        constitution: document.getElementById('constitution').value,
-        dext_abdo: document.getElementById('dext_abdo').value,
-        volonte: document.getElementById('volonte').value,
-        niveau: document.getElementById('niveau').value,
-        xp: document.getElementById('xp').value,
-        q1: document.getElementById('q1').checked,
-        q2: document.getElementById('q2').checked,
-        q3: document.getElementById('q3').checked
-      };
-      localStorage.setItem('soloLevelingOdin504', JSON.stringify(data));
-      alert('Données sauvegardées !');
-    }
-
-    saveBtn.addEventListener('click', saveData);
-
-    window.onload = function() {
-      const saved = localStorage.getItem('soloLevelingOdin504');
-      if (saved) {
-        const data = JSON.parse(saved);
-        document.getElementById('force').value = data.force;
-        document.getElementById('endurance').value = data.endurance;
-        document.getElementById('constitution').value = data.constitution;
-        document.getElementById('dext_abdo').value = data.dext_abdo;
-        document.getElementById('volonte').value = data.volonte;
-        document.getElementById('niveau').value = data.niveau;
-        document.getElementById('xp').value = data.xp;
-        document.getElementById('q1').checked = data.q1;
-        document.getElementById('q2').checked = data.q2;
-        document.getElementById('q3').checked = data.q3;
-      }
-    };
-  </script>
 
   <h1>Quêtes Solo Leveling - Odin504</h1>
 
@@ -92,19 +90,63 @@
     <button data-quest="quest3">Raid hebdomadaire : Raid du Cœur du Dragon</button>
   </div>
 
-  <section id="quest-display" class="quest-box">
+  <section id="quest-display">
     <h2>Choisis une quête</h2>
     <p>Sélectionne une quête pour voir ses détails.</p>
   </section>
 
-  <section class="rank-section">
+  <section>
     <h2>Rang actuel</h2>
-    <p id="current-rank">Novice Éveillé (Niveau 1) - XP : 0
-    </p>
+    <p id="current-rank">Novice Éveillé (Niveau 1) - XP : 0</p>
     <button id="addXpBtn">Ajouter 20 XP</button>
   </section>
 
 <script>
+  // Gestion du stockage local
+  const saveBtn = document.getElementById('saveBtn');
+
+  function saveData() {
+    const data = {
+      force: document.getElementById('force').value,
+      endurance: document.getElementById('endurance').value,
+      constitution: document.getElementById('constitution').value,
+      dext_abdo: document.getElementById('dext_abdo').value,
+      volonte: document.getElementById('volonte').value,
+      niveau: document.getElementById('niveau').value,
+      xp: document.getElementById('xp').value,
+      q1: document.getElementById('q1').checked,
+      q2: document.getElementById('q2').checked,
+      q3: document.getElementById('q3').checked
+    };
+    localStorage.setItem('soloLevelingOdin504', JSON.stringify(data));
+    alert('Données sauvegardées dans le navigateur !');
+  }
+
+  saveBtn.addEventListener('click', saveData);
+
+  // Charger les données au chargement
+  window.onload = function() {
+    const saved = localStorage.getItem('soloLevelingOdin504');
+    if (saved) {
+      const data = JSON.parse(saved);
+      document.getElementById('force').value = data.force;
+      document.getElementById('endurance').value = data.endurance;
+      document.getElementById('constitution').value = data.constitution;
+      document.getElementById('dext_abdo').value = data.dext_abdo;
+      document.getElementById('volonte').value = data.volonte;
+      document.getElementById('niveau').value = data.niveau;
+      document.getElementById('xp').value = data.xp;
+      document.getElementById('q1').checked = data.q1;
+      document.getElementById('q2').checked = data.q2;
+      document.getElementById('q3').checked = data.q3;
+
+      // Mettre à jour le rang avec XP sauvegardé
+      currentXp = parseInt(data.xp, 10) || 0;
+      updateRank();
+    }
+  };
+
+  // Quêtes et affichage
   const quests = {
     quest1: {
       title: "Quête quotidienne : Éveil du Titan du Haut",
@@ -179,7 +221,6 @@
   });
 
   function updateRank() {
-    // Trouver le rang correspondant au XP actuel
     let rank = ranks[0];
     for (let i = ranks.length - 1; i >= 0; i--) {
       if (currentXp >= ranks[i].xpNeeded) {
@@ -189,10 +230,13 @@
       }
     }
     currentRankDisplay.textContent = `${rank.title} (Niveau ${rank.lvl}) - XP : ${currentXp}`;
+
+    // Met à jour aussi le champ XP et Niveau dans le formulaire
+    document.getElementById('xp').value = currentXp;
+    document.getElementById('niveau').value = currentLevel;
   }
 
   addXpBtn.addEventListener('click', () => {
-    // Ajoute 20 XP à chaque clic (à ajuster selon la quête)
     currentXp += 20;
     updateRank();
   });
