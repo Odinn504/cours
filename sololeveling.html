@@ -5,38 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Fiche de personnage Odin504 - Solo Leveling</title>
 <link rel="stylesheet" href="sololeveling.css">
-<style>
-  /* Cases à cocher à gauche avec label aligné */
-  section input[type="checkbox"] {
-    vertical-align: middle;
-    margin-right: 8px;
-  }
-  section div > label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-
-  /* Boutons de quête côte à côte */
-  .button-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 1em;
-  }
-  .button-container button {
-    flex: 1;
-    padding: 10px;
-    cursor: pointer;
-  }
-
-  /* Pour que la section des quêtes ait une bordure et une taille */
-  #quest-display {
-    border: 1px solid #ccc;
-    padding: 10px;
-    min-height: 150px;
-    margin-bottom: 20px;
-  }
-</style>
 </head>
 <body>
 
@@ -65,6 +33,9 @@
       <label for="volonte">Volonté :</label>
       <input type="number" id="volonte" min="0" max="100" value="6" />
     </div>
+    <!-- Champs cachés pour niveau et xp -->
+    <input type="hidden" id="niveau" value="1" />
+    <input type="hidden" id="xp" value="0" />
   </section>
 
   <section>
@@ -100,53 +71,10 @@
     <p id="current-rank">Novice Éveillé (Niveau 1) - XP : 0</p>
     <button id="addXpBtn">Ajouter 20 XP</button>
   </section>
+<a href="index.html" class="solo-btn">Retour à l'accueil</a>
 
 <script>
-  // Gestion du stockage local
-  const saveBtn = document.getElementById('saveBtn');
-
-  function saveData() {
-    const data = {
-      force: document.getElementById('force').value,
-      endurance: document.getElementById('endurance').value,
-      constitution: document.getElementById('constitution').value,
-      dext_abdo: document.getElementById('dext_abdo').value,
-      volonte: document.getElementById('volonte').value,
-      niveau: document.getElementById('niveau').value,
-      xp: document.getElementById('xp').value,
-      q1: document.getElementById('q1').checked,
-      q2: document.getElementById('q2').checked,
-      q3: document.getElementById('q3').checked
-    };
-    localStorage.setItem('soloLevelingOdin504', JSON.stringify(data));
-    alert('Données sauvegardées dans le navigateur !');
-  }
-
-  saveBtn.addEventListener('click', saveData);
-
-  // Charger les données au chargement
-  window.onload = function() {
-    const saved = localStorage.getItem('soloLevelingOdin504');
-    if (saved) {
-      const data = JSON.parse(saved);
-      document.getElementById('force').value = data.force;
-      document.getElementById('endurance').value = data.endurance;
-      document.getElementById('constitution').value = data.constitution;
-      document.getElementById('dext_abdo').value = data.dext_abdo;
-      document.getElementById('volonte').value = data.volonte;
-      document.getElementById('niveau').value = data.niveau;
-      document.getElementById('xp').value = data.xp;
-      document.getElementById('q1').checked = data.q1;
-      document.getElementById('q2').checked = data.q2;
-      document.getElementById('q3').checked = data.q3;
-
-      // Mettre à jour le rang avec XP sauvegardé
-      currentXp = parseInt(data.xp, 10) || 0;
-      updateRank();
-    }
-  };
-
-  // Quêtes et affichage
+  // Données des quêtes et des rangs (inchangées)
   const quests = {
     quest1: {
       title: "Quête quotidienne : Éveil du Titan du Haut",
@@ -204,14 +132,60 @@
     { lvl: 6, xpNeeded: 600, title: "Bourreau des Abdos" }
   ];
 
+  // Variables globales
   let currentXp = 0;
   let currentLevel = 1;
 
+  // Elements DOM
+  const saveBtn = document.getElementById('saveBtn');
   const buttons = document.querySelectorAll('button[data-quest]');
   const questDisplay = document.getElementById('quest-display');
   const currentRankDisplay = document.getElementById('current-rank');
   const addXpBtn = document.getElementById('addXpBtn');
 
+  // Sauvegarder dans localStorage
+  function saveData() {
+    const data = {
+      force: document.getElementById('force').value,
+      endurance: document.getElementById('endurance').value,
+      constitution: document.getElementById('constitution').value,
+      dext_abdo: document.getElementById('dext_abdo').value,
+      volonte: document.getElementById('volonte').value,
+      niveau: document.getElementById('niveau').value,
+      xp: document.getElementById('xp').value,
+      q1: document.getElementById('q1').checked,
+      q2: document.getElementById('q2').checked,
+      q3: document.getElementById('q3').checked
+    };
+    localStorage.setItem('soloLevelingOdin504', JSON.stringify(data));
+    alert('Données sauvegardées dans le navigateur !');
+  }
+
+  saveBtn.addEventListener('click', saveData);
+
+  // Charger les données depuis localStorage au chargement
+  window.addEventListener('load', () => {
+    const saved = localStorage.getItem('soloLevelingOdin504');
+    if (saved) {
+      const data = JSON.parse(saved);
+      document.getElementById('force').value = data.force || 5;
+      document.getElementById('endurance').value = data.endurance || 5;
+      document.getElementById('constitution').value = data.constitution || 5;
+      document.getElementById('dext_abdo').value = data.dext_abdo || 5;
+      document.getElementById('volonte').value = data.volonte || 6;
+      document.getElementById('niveau').value = data.niveau || 1;
+      document.getElementById('xp').value = data.xp || 0;
+      document.getElementById('q1').checked = data.q1 || false;
+      document.getElementById('q2').checked = data.q2 || false;
+      document.getElementById('q3').checked = data.q3 || false;
+
+      currentXp = parseInt(data.xp, 10) || 0;
+      currentLevel = parseInt(data.niveau, 10) || 1;
+      updateRank();
+    }
+  });
+
+  // Affichage détails quêtes au clic
   buttons.forEach(button => {
     button.addEventListener('click', () => {
       const questKey = button.getAttribute('data-quest');
@@ -220,6 +194,7 @@
     });
   });
 
+  // Mettre à jour le rang et affichage
   function updateRank() {
     let rank = ranks[0];
     for (let i = ranks.length - 1; i >= 0; i--) {
@@ -230,20 +205,18 @@
       }
     }
     currentRankDisplay.textContent = `${rank.title} (Niveau ${rank.lvl}) - XP : ${currentXp}`;
-
-    // Met à jour aussi le champ XP et Niveau dans le formulaire
     document.getElementById('xp').value = currentXp;
     document.getElementById('niveau').value = currentLevel;
   }
 
+  // Ajouter XP au clic
   addXpBtn.addEventListener('click', () => {
     currentXp += 20;
     updateRank();
   });
 
-  // Initial update
+  // Initialisation
   updateRank();
-
 </script>
 
 </body>
