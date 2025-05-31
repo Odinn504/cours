@@ -1,0 +1,17 @@
+backend:
+  name: github
+  repo: tonpseudo/tonrepo  # Remplace par ton utilisateur/nom de dépôt GitHub
+  branch: main             # Branche où se trouvent les fichiers à modifier
+
+media_folder: "static/images"  # Où les images uploadées seront stockées dans le dépôt
+public_folder: "/images"       # URL publique des images
+
+collections:
+  - name: "pages"
+    label: "Pages"
+    folder: "content/pages"    # Dossier où sont tes pages éditables
+    create: true               # Permet de créer de nouvelles pages depuis l'interface
+    slug: "{{slug}}"
+    fields:
+      - { label: "Titre", name: "title", widget: "string" }
+      - { label: "Contenu", name: "body", widget: "markdown" }
